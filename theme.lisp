@@ -8,6 +8,8 @@
                 #:with-html)
   (:import-from #:alexandria
                 #:when-let*)
+  (:import-from #:40ants-doc/builder)
+  (:import-from #:40ants-doc/github)
   (:nicknames #:40ants-doc-theme-40ants/theme)
   (:export #:40ants-theme))
 (in-package 40ants-doc-theme-40ants)
