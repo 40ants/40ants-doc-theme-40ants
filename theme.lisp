@@ -21,7 +21,7 @@
     (concatenate
      'string
      (call-next-method)
-     
+
      (lass:compile-and-write
       `(body
         :font-family "\"Lora\",Georgia,\"Times New Roman\",Times,serif"
@@ -32,14 +32,14 @@
         ((:or h1 h2 h3 h4 h5 h6 h7)
          :color ,orange
          :border-bottom none)
-        
+
         (.sidebar
          :background ,toc-back
          :box-shadow inset -3px 0 3px 0px "#777"
          (.page-toc
           (a
            :color "#333"))
-         (.toc-active 
+         (.toc-active
           :background "rgba(0,0,0,0)"
           :box-shadow 0 0 0
           :border-left 10px solid ,orange
@@ -54,11 +54,11 @@
          (a
           :border-bottom none)
          (.navbar-inner
-          :min-height 60px              
-          :padding-right 20px           
-          :padding-left 20px            
+          :min-height 60px
+          :padding-right 20px
+          :padding-left 20px
           :border 1px solid "#d7d7d7"
-          :border-radius 4px            
+          :border-radius 4px
           :box-shadow 0 1px 4px "rgb(0 0 0 / 7%)")
          (.nav
           :position relative
@@ -80,8 +80,7 @@
           :padding 0
           :margin -5px 0 0 -15px
           :display block
-          :float left
-          )
+          :float left)
          ((.brand > .logo)
           :width 60px))
 
@@ -105,7 +104,39 @@
         ;; I use this class on tables with GitHub badges
         (.badges
          (a
-          :border-bottom none)))))))
+          :border-bottom none))
+
+        ;; This code renders a GitHub stripe if ASDF system's github url is known
+        (|#fork-me|
+         :top 3em
+         :right -6em
+         :color "#fff"
+         :display block
+         :position fixed
+         :text-align center
+         :text-decoration none
+         :letter-spacing .06em
+         :background-color "#A00"
+         :padding 0.5em 5em 0.4em 5em
+         :text-shadow 0 0 0.75em "#444"
+         :box-shadow "0 0 0.5em rgba(0,0,0,0.5)"
+         :transform "rotate(45deg) scale(0.75,1)"
+         :font bold "16px/1.2em" "Arial, Sans-Serif"
+         :z-index 10)
+
+        ((:and |#fork-me| :before)
+         :content ""
+         :top 0
+         :left 0
+         :right 0
+         :bottom 0
+         :position absolute
+         :margin -0.3em -5em
+         :transform "scale(0.7)"
+         :border "2px rgba(255,255,255,0.7) dashed")
+
+        ((:and |#fork-me| :hover)
+         :opacity 0.9))))))
 
 
 (defmethod 40ants-doc/themes/api:highlight-theme ((theme 40ants-theme))
@@ -121,6 +152,14 @@
 
 (defmethod 40ants-doc/themes/api:render-page-header ((theme 40ants-theme) uri title)
   (with-html
+    ;; Code of the GitHub stripe was taken from:
+    ;; https://codepen.io/beben-koben/pen/BoLyf
+    (alexandria:when-let* ((asdf-system (40ants-doc/builder:get-current-asdf-system))
+                           (github-uri (40ants-doc/github::asdf-system-github-uri asdf-system)))
+      (:a :id "fork-me"
+          :href github-uri
+          "Fork me on GitHub"))
+
     (:div :class "navbar"
           (:div :class "navbar-inner"
                 (:a :class "brand"
