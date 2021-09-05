@@ -6,6 +6,8 @@
                 #:default-theme)
   (:import-from #:40ants-doc/commondoc/html
                 #:with-html)
+  (:import-from #:alexandria
+                #:when-let*)
   (:nicknames #:40ants-doc-theme-40ants/theme)
   (:export #:40ants-theme))
 (in-package 40ants-doc-theme-40ants)
@@ -154,8 +156,8 @@
   (with-html
     ;; Code of the GitHub stripe was taken from:
     ;; https://codepen.io/beben-koben/pen/BoLyf
-    (alexandria:when-let* ((asdf-system (40ants-doc/builder:get-current-asdf-system))
-                           (github-uri (40ants-doc/github::asdf-system-github-uri asdf-system)))
+    (when-let* ((asdf-system (40ants-doc/builder:get-current-asdf-system))
+                (github-uri (40ants-doc/github::asdf-system-github-uri asdf-system)))
       (:a :id "fork-me"
           :href github-uri
           "Fork me on GitHub"))
