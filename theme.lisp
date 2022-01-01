@@ -33,6 +33,10 @@
         :line-height 26px
         :color "#333"
 
+        ((:or |#sidebar-check|
+              |#sidebar-trigger|)
+         :display none)
+
         ((:or h1 h2 h3 h4 h5 h6 h7)
          :color ,orange
          :border-bottom none)
@@ -40,6 +44,8 @@
         (.sidebar
          :background ,toc-back
          :box-shadow inset -3px 0 3px 0px "#777"
+         :transition all .4s
+
          (.page-toc
           (a
            :color "#333"))
@@ -140,8 +146,103 @@
          :border "2px rgba(255,255,255,0.7) dashed")
 
         ((:and |#fork-me| :hover)
-         :opacity 0.9))))))
+         :opacity 0.9)
 
+        (.demo :border 0.1em solid "#CCCCCC"
+               :background-color "#F5F3ED"
+               :margin-top 1em
+               :padding 3px
+               :padding-right 5px
+
+               (iframe :background-color white
+                       :border 1px solid "#CCC"))))
+
+     (lass:compile-and-write
+      '(:media "(max-width: 800px)"
+        (body
+         (.search
+          (input
+           :font-size 3ex))
+         ((.page > .content) :margin 0 2ex 0 2ex
+          :padding 1ex)
+         ((.page > .footer) :margin 0 2ex 0 2ex
+          :padding 1ex
+          (.fineprint
+           :text-align center))
+         
+         ;; TODO: Make bar visible and readable on phones
+         (.navbar :display none)
+
+         ;; This sidebar trigger was inspired by these articles
+         ;; https://www.cssscript.com/hamburger-sidebar-navigation/
+         ;; https://gscode.in/css-hamburger-menu/
+         (|#sidebar-trigger|
+          :display inline-block
+          :position relative
+          :top 2ex
+          :left 3ex
+          :z-index 1000
+          :width 50px
+          :height 44px
+          :cursor pointer
+          :box-sizing border-box
+          
+          (span
+           :display inline-block
+           :transition all .4s
+           :box-sizing border-box
+           :position absolute
+           :left 0
+           :width 100%
+           :height 4px
+           :background-color orange
+           :border-radius 4px)
+
+          ((:and span (:nth-of-type 1))
+           :top 0)
+          ((:and span (:nth-of-type 2))
+           :top 20px)
+          ((:and span (:nth-of-type 3))
+           :bottom 0))
+
+         (((:and |#sidebar-check| :checked)
+           ~
+           .sidebar)
+          :display block
+          :width 100%
+          :max-width 100%
+          :position relative)
+
+         (((:and |#sidebar-check| :checked)
+           ~
+           (:or .content
+            .footer))
+          :display none)
+         
+         (((:and |#sidebar-check| :checked)
+           ~
+           (label (:and span (:nth-of-type 1))))
+          :top 20px
+          :transform rotate -45deg)
+         (((:and |#sidebar-check| :checked)
+           ~
+           (label (:and span (:nth-of-type 2))))
+          :opacity 0)
+         (((:and |#sidebar-check| :checked)
+           ~
+           (label (:and span (:nth-of-type 3))))
+          :top 20px
+          :transform rotate 45deg)
+
+         (.sidebar
+          :display none
+          :box-shadow none
+          ;; To remove scroll in the sidebar itself,
+          ;; when we show it full screen on small devices
+          :height inherit
+          (.page-toc
+           (p :font-size 3ex)))))))))
+               
 
 (defmethod 40ants-doc/themes/api:highlight-theme ((theme 40ants-theme))
   "a11y-dark")
@@ -173,7 +274,15 @@
                 (:ul :class "nav"
                      (loop for (url item) in *menu-items*
                            do (:li (:a :href url
-                                       item))))))))
+                                       item))))))
+
+    (:input :type "checkbox"
+            :id "sidebar-check")
+    (:label :for "sidebar-check"
+            (:div :id "sidebar-trigger"
+                  (:span)
+                  (:span)
+                  (:span)))))
 
 
 (defmethod 40ants-doc/themes/api:render-page-footer ((theme 40ants-theme) uri)
