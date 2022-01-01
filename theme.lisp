@@ -59,7 +59,7 @@
          :margin-top 2em
          :margin-bottom 26px
          :margin-left 44ex
-         :margin-right 44ex
+         :max-width 70%
          :overflow visible
          (a
           :border-bottom none)
@@ -67,21 +67,20 @@
           :min-height 60px
           :padding-right 20px
           :padding-left 20px
+          :display flex
+          :flex-wrap nowrap
           :border 1px solid "#d7d7d7"
           :border-radius 4px
           :box-shadow 0 1px 4px "rgb(0 0 0 / 7%)")
          (.nav
-          :position relative
           :left 0
-          :display block
-          :float left
+          :display flex
           :margin 0 10px 0 0
           :list-style none
           (li
-           :float left
+           :text-align center
            (a
-            :display block
-            :float none
+            :display inline-block
             :padding 17px 15px 17px
             :color "#333"
             :text-decoration none
@@ -89,8 +88,7 @@
          (.brand
           :padding 0
           :margin -5px 0 0 -15px
-          :display block
-          :float left)
+          :display block)
          ((.brand > .logo)
           :width 60px))
 
