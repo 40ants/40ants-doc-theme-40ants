@@ -1,15 +1,15 @@
 (defpackage #:40ants-doc-theme-40ants
   (:use #:cl)
   (:import-from #:lass)
-  (:import-from #:40ants-doc/themes/api)
-  (:import-from #:40ants-doc/themes/default
+  (:import-from #:40ants-doc-full/themes/api)
+  (:import-from #:40ants-doc-full/themes/default
                 #:default-theme)
-  (:import-from #:40ants-doc/commondoc/html
+  (:import-from #:40ants-doc-full/commondoc/html
                 #:with-html)
   (:import-from #:alexandria
                 #:when-let*)
-  (:import-from #:40ants-doc/builder)
-  (:import-from #:40ants-doc/github)
+  (:import-from #:40ants-doc-full/builder)
+  (:import-from #:40ants-doc-full/github)
   (:nicknames #:40ants-doc-theme-40ants/theme)
   (:export #:40ants-theme))
 (in-package 40ants-doc-theme-40ants)
@@ -19,7 +19,7 @@
   ())
 
 
-(defmethod 40ants-doc/themes/api:render-css ((theme 40ants-theme))
+(defmethod 40ants-doc-full/themes/api:render-css ((theme 40ants-theme))
   (let ((toc-back "#FFFEFB")
         (orange "#E78B24"))
     (concatenate
@@ -246,7 +246,7 @@
            (p :font-size 3ex)))))))))
                
 
-(defmethod 40ants-doc/themes/api:highlight-theme ((theme 40ants-theme))
+(defmethod 40ants-doc-full/themes/api:highlight-theme ((theme 40ants-theme))
   "a11y-dark")
 
 
@@ -257,12 +257,12 @@
     ("/projects.html" "Our Projects")))
 
 
-(defmethod 40ants-doc/themes/api:render-page-header ((theme 40ants-theme) uri title)
+(defmethod 40ants-doc-full/themes/api:render-page-header ((theme 40ants-theme) uri title)
   (with-html
     ;; Code of the GitHub stripe was taken from:
     ;; https://codepen.io/beben-koben/pen/BoLyf
-    (when-let* ((asdf-system (40ants-doc/builder:get-current-asdf-system))
-                (github-uri (40ants-doc/github::asdf-system-github-uri asdf-system)))
+    (when-let* ((asdf-system (40ants-doc-full/builder:get-current-asdf-system))
+                (github-uri (40ants-doc-full/github::asdf-system-github-uri asdf-system)))
       (:a :id "fork-me"
           :href github-uri
           "Fork me on GitHub"))
@@ -287,7 +287,7 @@
                   (:span)))))
 
 
-(defmethod 40ants-doc/themes/api:render-page-footer ((theme 40ants-theme) uri)
+(defmethod 40ants-doc-full/themes/api:render-page-footer ((theme 40ants-theme) uri)
   (with-html
     (:div :class "footer"
           (:hr :class "separator")
