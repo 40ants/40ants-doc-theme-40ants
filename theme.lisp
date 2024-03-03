@@ -15,8 +15,49 @@
 (in-package 40ants-doc-theme-40ants)
 
 
+(defparameter *google-analytics-code* "
+    <!-- Google tag (gtag.js) -->
+    <script async src=\"https://www.googletagmanager.com/gtag/js?id=G-FL71WXK73K\"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-FL71WXK73K');
+    </script>
+")
+
+
+(defparameter *yandex-metrics-code* "
+    <!-- Yandex.Metrika counter -->
+    <script type=\"text/javascript\" >
+       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+       m[i].l=1*new Date();
+       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+       (window, document, \"script\", \"https://mc.yandex.ru/metrika/tag.js\", \"ym\");
+
+       ym(42462884, \"init\", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true
+       });
+    </script>
+    <noscript><div><img src=\"https://mc.yandex.ru/watch/42462884\" style=\"position:absolute; left:-9999px;\" alt=\"\" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+")
+
+
 (defclass 40ants-theme (default-theme)
   ())
+
+
+(defmethod 40ants-doc-full/themes/api:render-html-head ((theme 40ants-theme) uri title)
+  (call-next-method)
+  
+  (with-html
+    (:raw *google-analytics-code*)
+    (:raw *yandex-metrics-code*)))
 
 
 (defmethod 40ants-doc-full/themes/api:render-css ((theme 40ants-theme))
@@ -244,7 +285,7 @@
           :height inherit
           (.page-toc
            (p :font-size 3ex)))))))))
-               
+
 
 (defmethod 40ants-doc-full/themes/api:highlight-theme ((theme 40ants-theme))
   "a11y-dark")
