@@ -292,10 +292,11 @@
 
 
 (defparameter *menu-items*
-  '(("/about.html" "Who We Are")
-    ("https://gitter.im/40ants/team" "Chat With Us")
-    ("/tips.html" "Lisp Tips")
-    ("/projects.html" "Our Projects")))
+  '(("/posts/" "Blog")
+    ("/ru/posts/" "Blog (RU)")
+    ("/tips/" "Lisp Tips")
+    ("/projects/" "Our Projects")
+    ("/about/" "About")))
 
 
 (defmethod 40ants-doc-full/themes/api:render-page-header ((theme 40ants-theme) uri title)
