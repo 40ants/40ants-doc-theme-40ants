@@ -48,6 +48,121 @@
 ")
 
 
+(defparameter *sidebar-css*
+  "
+<style type=\"text/css\">
+/* Стили для сворачиваемого меню */
+.sidebar ul ul {
+  display: none; /* Скрываем все подменю по умолчанию */
+  margin-left: 0.5em;
+}
+
+.sidebar li.expanded > ul {
+  display: block; /* Показываем подменю для развернутых элементов */
+}
+
+/* Стили для пунктов с подменю */
+.sidebar li.has-children > a {
+  cursor: pointer;
+  position: relative;
+  padding-left: 1.2em;
+}
+
+.sidebar li.has-children > p > a {
+  position: relative;
+  left: -1rem;
+}
+
+.sidebar li.has-children > p > a::before {
+  content:\"►\";
+}
+
+.sidebar li.has-children.expanded > p > a::before {
+  content: \"▼\";
+  position: relative;
+  left: -0.08rem;
+}
+
+/* Подсветка активного пункта */
+.sidebar li.active > a {
+  font-weight: bold;
+}
+
+/* Если активная страница находится в подменю, раскрываем родителя */
+.sidebar li.active-parent {
+  font-weight: normal;
+}
+
+.sidebar li.active-parent > ul {
+  display: block;
+}
+</style>
+")
+
+
+(defparameter *sidebar-js*
+  "
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Находим все пункты меню с подпунктами
+  const menuItems = document.querySelectorAll('.sidebar li');
+  
+  menuItems.forEach(item => {
+    const subMenu = item.querySelector('ul');
+    
+    // Если у пункта есть подменю
+    if (subMenu) {
+      item.classList.add('has-children');
+      
+      // Проверяем, содержит ли подменю активный пункт
+      const hasActiveChild = subMenu.querySelector('li.active') !== null;
+      
+      // Если содержит активный пункт, раскрываем родителя
+      if (hasActiveChild) {
+        item.classList.add('expanded');
+        item.classList.add('active-parent');
+      }
+      
+      // Добавляем обработчик клика
+      const link = item.querySelector('a');
+      if (link) {
+        link.addEventListener('click', function(e) {
+          // Останавливаем переход по ссылке только если кликнули по пункту с подменю
+          if (item.classList.contains('has-children')) {
+            e.preventDefault();
+            
+            // Переключаем класс для раскрытия/скрытия
+            item.classList.toggle('expanded');
+          }
+        });
+      }
+    }
+  });
+  
+  // Функция для поиска и раскрытия родителей активного пункта
+  function expandActiveItemParents() {
+    const activeItem = document.querySelector('.sidebar li.active');
+    if (activeItem) {
+      let parent = activeItem.parentElement;
+      
+      while (parent) {
+        if (parent.tagName === 'UL' && parent.parentElement && parent.parentElement.tagName === 'LI') {
+          parent.parentElement.classList.add('expanded');
+          parent.parentElement.classList.add('active-parent');
+        }
+        parent = parent.parentElement;
+      }
+    }
+  }
+  
+  // Запускаем функцию для текущей страницы
+  expandActiveItemParents();
+});
+</script>
+
+")
+
+
 (defclass 40ants-theme (default-theme)
   ())
 
@@ -56,6 +171,7 @@
   (call-next-method)
   
   (with-html
+    (:raw *sidebar-css*)
     (:raw *google-analytics-code*)
     (:raw *yandex-metrics-code*)))
 
@@ -337,4 +453,5 @@
               "Created with passion by " (:em "40Ants")
               (:a :class "lisp-logo"
                   :href "http://lisp-lang.org/"
-                  (:img :src "https://40ants.com/img/made-with-lisp.svg"))))))
+                  (:img :src "https://40ants.com/img/made-with-lisp.svg"))))
+    (:raw *sidebar-js*)))
