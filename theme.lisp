@@ -104,23 +104,57 @@
   "
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // Ключ для localStorage
+  const STORAGE_KEY = 'defmain_menu_state';
+  
+  // Загружаем сохраненное состояние меню
+  function loadMenuState() {
+    try {
+      const savedState = localStorage.getItem(STORAGE_KEY);
+      return savedState ? JSON.parse(savedState) : {};
+    } catch (e) {
+      console.error('Ошибка при загрузке состояния меню:', e);
+      return {};
+    }
+  }
+  
+  // Сохраняем текущее состояние меню
+  function saveMenuState(state) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.error('Ошибка при сохранении состояния меню:', e);
+    }
+  }
+  
+  // Получаем уникальный идентификатор для пункта меню
+  function getMenuItemId(item) {
+    const link = item.querySelector('a');
+    if (!link) return null;
+    
+    // Используем текст ссылки как идентификатор
+    // Можно также использовать href, но он может меняться в зависимости от текущей страницы
+    return link.innerText.trim();
+  }
+  
+  // Загружаем сохраненное состояние
+  const menuState = loadMenuState();
+  
   // Находим все пункты меню с подпунктами
   const menuItems = document.querySelectorAll('.sidebar li');
   
+  // Обрабатываем каждый пункт меню
   menuItems.forEach(item => {
     const subMenu = item.querySelector('ul');
     
     // Если у пункта есть подменю
     if (subMenu) {
+      const itemId = getMenuItemId(item);
       item.classList.add('has-children');
       
-      // Проверяем, содержит ли подменю активный пункт
-      const hasActiveChild = subMenu.querySelector('li.active') !== null;
-      
-      // Если содержит активный пункт, раскрываем родителя
-      if (hasActiveChild) {
+      // Восстанавливаем состояние из localStorage, если оно сохранено
+      if (itemId && menuState[itemId]) {
         item.classList.add('expanded');
-        item.classList.add('active-parent');
       }
       
       // Добавляем обработчик клика
@@ -133,6 +167,16 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Переключаем класс для раскрытия/скрытия
             item.classList.toggle('expanded');
+            
+            // Сохраняем новое состояние
+            if (itemId) {
+              if (item.classList.contains('expanded')) {
+                menuState[itemId] = true;
+              } else {
+                delete menuState[itemId];
+              }
+              saveMenuState(menuState);
+            }
           }
         });
       }
@@ -149,9 +193,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (parent.tagName === 'UL' && parent.parentElement && parent.parentElement.tagName === 'LI') {
           parent.parentElement.classList.add('expanded');
           parent.parentElement.classList.add('active-parent');
+          
+          // Сохраняем состояние активного родителя
+          const parentItem = parent.parentElement;
+          const parentId = getMenuItemId(parentItem);
+          if (parentId) {
+            menuState[parentId] = true;
+          }
         }
         parent = parent.parentElement;
       }
+      
+      // Сохраняем обновленное состояние после раскрытия активных родителей
+      saveMenuState(menuState);
     }
   }
   
