@@ -105,7 +105,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   // Ключ для localStorage
-  const STORAGE_KEY = 'defmain_menu_state';
+  const STORAGE_KEY = 'ASDF-SYSTEM-NAME-menu-state';
   
   // Загружаем сохраненное состояние меню
   function loadMenuState() {
@@ -501,11 +501,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 (defmethod 40ants-doc-full/themes/api:render-page-footer ((theme 40ants-theme) uri)
   (with-html
-    (:div :class "footer"
-          (:hr :class "separator")
-          (:p :class "fineprint"
-              "Created with passion by " (:em "40Ants")
-              (:a :class "lisp-logo"
-                  :href "http://lisp-lang.org/"
-                  (:img :src "https://40ants.com/img/made-with-lisp.svg"))))
-    (:raw *sidebar-js*)))
+      (:div :class "footer"
+       (:hr :class "separator")
+       (:p :class "fineprint"
+           "Created with passion by " (:em "40Ants")
+           (:a :class "lisp-logo"
+               :href "http://lisp-lang.org/"
+               (:img :src "https://40ants.com/img/made-with-lisp.svg"))))
+    (:raw (str:replace-all "ASDF-SYSTEM-NAME"
+                           (asdf:component-name
+                            (40ants-doc-full/builder:get-current-asdf-system))
+                           *sidebar-js*))))
